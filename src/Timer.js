@@ -7,11 +7,18 @@ class Timer extends React.Component{
         this.state={
             breakLength: 5,
             sessionLength: 25,
-            timeLeft: 80085
+            minutes: '25',
+            seconds: '00'
         };
         this.handleReset = this.handleReset.bind(this);
     }
-    handleReset 
+    handleReset(){
+        this.setState({
+            breakLength: 5,
+            sessionLength: 25,
+            timeLeft: 25
+        })
+    }
 
     render(){
         return(
@@ -38,9 +45,21 @@ class Timer extends React.Component{
                     <button id="session-decrement">Down</button>
                     <button id="session-increment">Up</button>
                 </div>
-                <div>
+                <div background-color="">
                     <div id="timer-label">Session</div>
-                    <div id="time-left">{this.state.timeLeft}</div>
+                    
+                    
+                    <div id="time-left">
+                    <span>{this.state.minutes}</span>
+                    <span>:</span>
+                    <span>{this.state.seconds}</span>
+                    
+                    
+                    
+                    </div>
+                    
+                    
+                    
                     <button id="start_stop">Start/Stop</button>
                     <button id="reset" onClick = {this.handleReset}>Reset</button>
                 </div>
