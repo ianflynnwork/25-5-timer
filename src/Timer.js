@@ -1,26 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
+const defaultRemainingTime = {
+    breakLength: 5,
+    sessionLength: 25,
+    minutes: '25',
+    seconds: '00'
+}
 
-class Timer extends React.Component{
-    constructor(){
-        super();
-        this.state={
-            breakLength: 5,
-            sessionLength: 25,
-            minutes: '25',
-            seconds: '00'
-        };
-        this.handleReset = this.handleReset.bind(this);
+const Timer = () => {    
+    const [remainingTime, setRemainingTime] = useState(defaultRemainingTime);
+
+    useEffect(()=>{
+        const intervalId = setInterval(()=>{
+            updateRemainingTime();
+        }, 1000);
+        return ()=> clearInterval(intervalId);
+    },[])
+
+    function updateRemainingTime(){
+        console.log('hey girllllll');
     }
-    handleReset(){
-        this.setState({
-            breakLength: 5,
-            sessionLength: 25,
-            timeLeft: 25
-        })
-    }
-
-    render(){
         return(
             <div>
                 <div>
@@ -29,7 +28,7 @@ class Timer extends React.Component{
                         id="break-length"
                         type="text"
                         readOnly 
-                        value={ this.state.breakLength }
+                        value={remainingTime.breakLength}
                     />
                     <button id="break-decrement">Down</button>
                     <button id="break-increment">Up</button>
@@ -40,7 +39,7 @@ class Timer extends React.Component{
                         id="session-length"
                         type="text"
                         readOnly 
-                        value={ this.state.sessionLength }
+                        value={remainingTime.sessionLength}
                     />
                     <button id="session-decrement">Down</button>
                     <button id="session-increment">Up</button>
@@ -50,9 +49,9 @@ class Timer extends React.Component{
                     
                     
                     <div id="time-left">
-                    <span>{this.state.minutes}</span>
+                    <span>{remainingTime.minutes}</span>
                     <span>:</span>
-                    <span>{this.state.seconds}</span>
+                    <span>{remainingTime.seconds}</span>
                     
                     
                     
@@ -61,12 +60,12 @@ class Timer extends React.Component{
                     
                     
                     <button id="start_stop">Start/Stop</button>
-                    <button id="reset" onClick = {this.handleReset}>Reset</button>
+                    <button id="reset">Reset</button>
                 </div>
                 
             </div>
         )
-    }
+    
 }
 
 export default Timer;
