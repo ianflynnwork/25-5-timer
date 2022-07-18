@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const defaultRemainingTime = {
     seconds: '00',
@@ -7,21 +7,32 @@ const defaultRemainingTime = {
     days: '00'
 }
 
-const Timer = () => {    
-    
-        return(
-            <div> 
-                <span>30</span>
-                <span>days</span>
-                <span>12</span>
-                <span>hours</span>
-                <span>4</span>
-                <span>minutes</span>
-                <span>32</span>
-                <span>seconds</span>
+const Timer = ({countdownTimestampMs}) => {    
+    const [remainingTime, setRemainingTime] = useState(defaultRemainingTime);
 
-            </div>
-        )
+    useEffect(()=>{
+        const intervalID = setInterval(()=>{
+            updateRemainingTime(countdownTimestampMs);
+        },1000);
+        return () => clearInterval(intervalID);
+    },[countdownTimestampMs])
+
+    function updateRemainingTime(countdown){
+        console.log('hello world')
+    }
+    return(
+        <div> 
+            <span>{remainingTime.days}</span>
+            <span>days</span>
+            <span>{remainingTime.hours}</span>
+            <span>hours</span>
+            <span>{remainingTime.minutes}</span>
+            <span>minutes</span>
+            <span>{remainingTime.seconds}</span>
+            <span>seconds</span>
+
+        </div>
+    )
     
 }
 

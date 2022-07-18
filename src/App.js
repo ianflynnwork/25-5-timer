@@ -3,7 +3,8 @@ import Timer from "./Timer";
 function App() {
   return (
     <div>
-        <Timer/>
+        <Timer
+        countdownTimestampMs={1643673600000}/>
     </div>
   );
 }
