@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useTimer } from "react-timer-hook";
 
 const defaultRemainingTime = {
     breakLength: 5,
@@ -9,37 +8,10 @@ const defaultRemainingTime = {
 }
 
 const Timer = () => {    
-    const time = new Date();
-    time.setSeconds(time.getSeconds() + 1500); // 10 minutes timer
-    const {
-        seconds,
-        minutes,
-        isRunning,
-        start,
-        pause,
-        resume,
-        restart,
-      } = useTimer({ time, onExpire: () => console.warn('onExpire called') }); 
-      
     const [remainingTime, setRemainingTime] = useState(defaultRemainingTime);
 
         return(
             <div> 
-                <div style={{textAlign: 'center'}}>
-                    <div style={{fontSize: '100px'}}>
-                        <span>{minutes}</span>:<span>{seconds}</span>
-                    </div>
-                    <p>{isRunning ? 'Running' : 'Stopped'}</p>
-                    <button onClick={start}>Start</button>
-                    <button onClick={pause}>Pause</button>
-                    <button onClick={resume}>Resume</button>
-                    <button onClick={() => {
-                        // Restarts to 5 minutes timer
-                        const time = new Date();
-                        time.setSeconds(time.getSeconds() + 300);
-                        restart(time)
-                    }}>Restart</button>
-                </div>
                 <div>
                     <div id="break-label">Break Length</div>
                     <input 
