@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getRemainingTimeUntilMsTimestamp } from "./TimerUtils";
 
 const defaultRemainingTime = {
     seconds: '00',
@@ -18,7 +19,7 @@ const Timer = ({countdownTimestampMs}) => {
     },[countdownTimestampMs])
 
     function updateRemainingTime(countdown){
-        console.log('hello world')
+        setRemainingTime(getRemainingTimeUntilMsTimestamp(countdown));
     }
     return(
         <div> 
