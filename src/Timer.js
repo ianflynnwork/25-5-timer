@@ -1,13 +1,23 @@
 import { useState } from "react";
 import Length from './Length';
 
+
 const Timer = () => {  
     const [displayTime, setDisplayTime] = useState(25*60);
     const [breakTime, setBreakTime] = useState(5*60);
     const [sessionTime, setSessionTime] = useState(25*60);
     const [timerOn, setTimerOn] = useState(false);
     const [onBreak, setOnBreak] = useState(false);
+    const [breakAudio, setBreakAudio] = useState(new Audio('./alarmSound.mp3'));
 
+    const playBreakSound = ()=>{
+        breakAudio.currentTime = 0;
+        breakAudio.play();
+        setTimeout(()=>{
+            breakAudio.pause();
+            breakAudio.currentTime = 0;
+        }, 2000);
+    }
     const formatTime = (time) => {
         const minutes = Math.floor(time/60);
         const seconds = time % 60;
@@ -43,6 +53,17 @@ const Timer = () => {
                 date = new Date().getTime();
                 if(date > nextDate){
                     setDisplayTime((prev) => {
+                        if(prev <= 0 && !onBreakVariable){
+                            playBreakSound();
+                            onBreakVariable=true;
+                            setOnBreak(true);
+                            return breakTime;
+                        } else if(prev <= 0 && onBreakVariable){
+                            playBreakSound();
+                            onBreakVariable=false;
+                            setOnBreak(false);
+                            return sessionTime;
+                        }
                         return prev - 1;
                     });
                     nextDate += second;
@@ -66,6 +87,7 @@ const Timer = () => {
     return(
         <div className="timer">
             <h1>Pomodoro Clock</h1>
+            <button onClick={playBreakSound}>Play</button>
             <div className="dual-containers">
                 <Length 
                     title={'break length'} 
@@ -80,7 +102,7 @@ const Timer = () => {
                     time={sessionTime}
                     formatTime={formatTime}/>
             </div>
-            
+            <h3>{onBreak ? 'BREAK' : 'SESSION'}</h3>
             <h1>{formatTime(displayTime)}</h1>
             <button onClick={controlTime}>{timerOn ? ('pause it'):('run it')}</button>
             <button onClick={resetTime}>Reset</button>
