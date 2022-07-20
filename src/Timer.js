@@ -6,6 +6,7 @@ const Timer = () => {
     const [breakTime, setBreakTime] = useState(5*60);
     const [sessionTime, setSessionTime] = useState(25*60);
     const [timerOn, setTimerOn] = useState(false);
+    const [onBreak, setOnBreak] = useState(false);
 
     const formatTime = (time) => {
         const minutes = Math.floor(time/60);
@@ -32,6 +33,36 @@ const Timer = () => {
 
         }
     }
+    const controlTime = () => {
+        let second = 1000;
+        let date = new Date().getTime();
+        let nextDate = new Date().getTime() + second;
+        let onBreakVariable = onBreak;
+        if(!timerOn){
+            let interval = setInterval(()=> {
+                date = new Date().getTime();
+                if(date > nextDate){
+                    setDisplayTime((prev) => {
+                        return prev - 1;
+                    });
+                    nextDate += second;
+                }
+            }, 30);
+            localStorage.clear();
+            localStorage.setItem('interval-id', interval);
+        }
+        if (timerOn) {
+            clearInterval(localStorage.getItem('interval-id'));
+        }
+        setTimerOn(!timerOn);
+    };
+    const resetTime = () => {
+        setDisplayTime(25*60);
+        setBreakTime(5*60);
+        setSessionTime(25*60);
+    }
+
+
     return(
         <div className="timer">
             <h1>Pomodoro Clock</h1>
@@ -51,6 +82,8 @@ const Timer = () => {
             </div>
             
             <h1>{formatTime(displayTime)}</h1>
+            <button onClick={controlTime}>{timerOn ? ('pause it'):('run it')}</button>
+            <button onClick={resetTime}>Reset</button>
         </div>
     )
     
