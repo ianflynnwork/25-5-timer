@@ -10,7 +10,7 @@ const Length = ({title, changeTime, type, time, formatTime}) => {
             </div>
             <h3>{formatTime(time)}</h3>
             <div className="times-sets">
-                <button>Up</button>
+            <button onClick={() => changeTime(60, type)}>Up</button>
             </div>
         </div>
     )
