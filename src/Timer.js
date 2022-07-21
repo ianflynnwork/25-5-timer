@@ -20,14 +20,17 @@ const Timer = () => {
         }, 1300);
     }
     const formatTime = (time) => {
-        const minutes = Math.floor(time/60);
-        const seconds = time % 60;
+        let minutes = Math.floor(time/60);
+        let seconds = time % 60;
         return (minutes < 10 ? '0' + minutes: minutes) + ':' + (seconds < 10 ? '0' + seconds: seconds)
     };
     const changeTime = (amount, type) => {
+        if(timerOn){
+            return;
+        }
         if(type == 'break'){
             //keep timers at 1 minute or higher
-            if(breakTime <= 60 && amount < 0){
+            if(breakTime <= 60 && amount < 0 ){
                 return;
             }
             setBreakTime((prev)=> prev + amount)
@@ -36,6 +39,10 @@ const Timer = () => {
             //keep timers at 1 minute or higher
             if(sessionTime <= 60 && amount < 0){
                 return;
+            }
+
+            if(sessionTime >= 3600 && amount > 0){
+                return
             }
             setSessionTime((prev)=> prev + amount);
             if(!timerOn){
@@ -82,37 +89,32 @@ const Timer = () => {
         setDisplayTime(25*60);
         setBreakTime(5*60);
         setSessionTime(25*60);
+        if (timerOn) {
+            clearInterval(localStorage.getItem('interval-id'));
+        }
+        setTimerOn(!timerOn);
     }
 
 
     return(
         <div className="timer">
             <h1>Pomodoro Clock</h1>
-            <button onClick={playBreakSound}>Play</button>
             <div className="dual-containers">
                 <Length 
                     title={'Break Length'} 
                     changeTime={changeTime}
                     type={'break'}
-                    time={breakTime/60}
-                    titleId={'break-label'}
-                    downId={'break-decrement'}
-                    upId={'break-increment'}
-                    timeId={'break-length'}/>
+                    time={breakTime/60}/>
                 <Length 
                     title={'Session Length'} 
                     changeTime={changeTime}
                     type={'session'}
-                    time={sessionTime/60}
-                    titleId={'session-label'}
-                    downId={'session-decrement'}
-                    upId={'session-increment'}
-                    timeId={'session-length'}/>
+                    time={sessionTime/60}/>
             </div>
             <h3 id='timer-label'>{onBreak ? 'Break' : 'Session'}</h3>
             <h1 id='time-left'>{formatTime(displayTime)}</h1>
-            <button id='start_stop' onClick={controlTime}>{timerOn ? ('pause it'):('run it')}</button>
-            <button onClick={resetTime}>Reset</button>
+            <button id='start_stop' onClick={controlTime}>{timerOn ? ('Pause'):('Start')}</button>
+            <button id='reset' onClick={resetTime}>Reset</button>
         </div>
     )
     
