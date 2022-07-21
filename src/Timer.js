@@ -1,22 +1,23 @@
 import { useState } from "react";
 import Length from './Length';
+import alarmSound from './alarmSound.mp3';
 
 
 const Timer = () => {  
-    const [displayTime, setDisplayTime] = useState(5);
+    const [displayTime, setDisplayTime] = useState(2);
     const [breakTime, setBreakTime] = useState(3);
-    const [sessionTime, setSessionTime] = useState(5);
+    const [sessionTime, setSessionTime] = useState(2);
     const [timerOn, setTimerOn] = useState(false);
     const [onBreak, setOnBreak] = useState(false);
-    const [breakAudio, setBreakAudio] = useState(new Audio('./alarmSound.mp3'));
+    const [breakAudio, setBreakAudio] = useState(new Audio(alarmSound));
 
-    const playBreakSound = ()=>{
-        breakAudio.currentTime = 0;
+    const playBreakSound = () => {
+        breakAudio.currentTime = 1;
         breakAudio.play();
         setTimeout(()=>{
             breakAudio.pause();
             breakAudio.currentTime = 0;
-        }, 2000);
+        }, 1300);
     }
     const formatTime = (time) => {
         const minutes = Math.floor(time/60);
