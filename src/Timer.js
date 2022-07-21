@@ -4,9 +4,9 @@ import alarmSound from './alarmSound.mp3';
 
 
 const Timer = () => {  
-    const [displayTime, setDisplayTime] = useState(2);
-    const [breakTime, setBreakTime] = useState(3);
-    const [sessionTime, setSessionTime] = useState(2);
+    const [displayTime, setDisplayTime] = useState(25*60);
+    const [breakTime, setBreakTime] = useState(5*60);
+    const [sessionTime, setSessionTime] = useState(25*60);
     const [timerOn, setTimerOn] = useState(false);
     const [onBreak, setOnBreak] = useState(false);
     const [breakAudio, setBreakAudio] = useState(new Audio(alarmSound));
@@ -91,21 +91,27 @@ const Timer = () => {
             <button onClick={playBreakSound}>Play</button>
             <div className="dual-containers">
                 <Length 
-                    title={'break length'} 
+                    title={'Break Length'} 
                     changeTime={changeTime}
                     type={'break'}
-                    time={breakTime}
-                    formatTime={formatTime}/>
+                    time={breakTime/60}
+                    titleId={'break-label'}
+                    downId={'break-decrement'}
+                    upId={'break-increment'}
+                    timeId={'break-length'}/>
                 <Length 
-                    title={'session length'} 
+                    title={'Session Length'} 
                     changeTime={changeTime}
                     type={'session'}
-                    time={sessionTime}
-                    formatTime={formatTime}/>
+                    time={sessionTime/60}
+                    titleId={'session-label'}
+                    downId={'session-decrement'}
+                    upId={'session-increment'}
+                    timeId={'session-length'}/>
             </div>
-            <h3>{onBreak ? 'BREAK' : 'SESSION'}</h3>
-            <h1>{formatTime(displayTime)}</h1>
-            <button onClick={controlTime}>{timerOn ? ('pause it'):('run it')}</button>
+            <h3 id='timer-label'>{onBreak ? 'Break' : 'Session'}</h3>
+            <h1 id='time-left'>{formatTime(displayTime)}</h1>
+            <button id='start_stop' onClick={controlTime}>{timerOn ? ('pause it'):('run it')}</button>
             <button onClick={resetTime}>Reset</button>
         </div>
     )

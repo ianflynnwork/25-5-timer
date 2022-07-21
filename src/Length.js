@@ -1,16 +1,16 @@
 
 
-const Length = ({title, changeTime, type, time, formatTime}) => {
+const Length = ({title, changeTime, type, time, titleId, downId, upId, timeId}) => {
 
     return (
         <div>
-            <h3>{title}</h3>
+            <h3 id={titleId}>{title}</h3>
             <div className="times-sets">
-                <button onClick={() => changeTime(-60, type)}>Down</button>
+                <button onClick={() => changeTime(-60, type)} id={downId}>Down</button>
             </div>
-            <h3>{formatTime(time)}</h3>
+            <h3 id={timeId}>{time}</h3>
             <div className="times-sets">
-            <button onClick={() => changeTime(60, type)}>Up</button>
+            <button onClick={() => changeTime(60, type)} id={upId}>Up</button>
             </div>
         </div>
     )
