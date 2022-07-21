@@ -1,5 +1,4 @@
-import { useState } from "react";
-import Length from './Length';
+import { useEffect, useState } from "react";
 import alarmSound from './alarmSound.mp3';
 
 
@@ -9,7 +8,33 @@ const Timer = () => {
     const [sessionTime, setSessionTime] = useState(25*60);
     const [timerOn, setTimerOn] = useState(false);
     const [onBreak, setOnBreak] = useState(false);
-    const [breakAudio, setBreakAudio] = useState(new Audio(alarmSound));
+    const breakAudio = new Audio(alarmSound);
+
+//new
+    const [intervalId, setIntervalId] = useState(null);
+
+    useEffect(() => {
+        setDisplayTime(sessionTime);
+      }, [sessionTime]);
+
+    useEffect(()=>{
+        if (displayTime == 0){
+            breakAudio.currentTime = 1;
+            breakAudio.play();
+            setTimeout(()=>{
+                breakAudio.pause();
+                breakAudio.currentTime = 0;
+                }, 1300);
+            if(!onBreak){
+                setOnBreak(true);
+                setDisplayTime(breakTime);
+            } else if(onBreak){
+                setOnBreak(false);
+                setDisplayTime(sessionTime);
+            }
+        }
+    }, [displayTime, onBreak, breakTime, sessionTime]);
+//end new
 
     const playBreakSound = () => {
         breakAudio.currentTime = 1;
@@ -51,69 +76,58 @@ const Timer = () => {
 
         }
     }
-    const controlTime = () => {
-        let second = 1000;
-        let date = new Date().getTime();
-        let nextDate = new Date().getTime() + second;
-        let onBreakVariable = onBreak;
-        if(!timerOn){
-            let interval = setInterval(() => {
-                date = new Date().getTime();
-                if(date > nextDate){
-                    setDisplayTime((prev) => {
-                        if(prev <= 0 && !onBreakVariable){
-                            playBreakSound();
-                            onBreakVariable=true;
-                            setOnBreak(true);
-                            return breakTime;
-                        } else if(prev <= 0 && onBreakVariable){
-                            playBreakSound();
-                            onBreakVariable=false;
-                            setOnBreak(false);
-                            return sessionTime;
-                        }
-                        return prev - 1;
-                    });
-                    nextDate += second;
-                }
-            }, 30);
-            localStorage.clear();
-            localStorage.setItem('interval-id', interval);
+//new 
+    const timerControl = ()=>{
+        if(intervalId === null){
+            const interval = setInterval(()=>{
+                setDisplayTime((prev) => prev - 1)
+            }, 1000);
+            setIntervalId(interval);
+        } else {
+            clearInterval(intervalId);
+            setIntervalId(null);
         }
-        if (timerOn) {
-            clearInterval(localStorage.getItem('interval-id'));
-        }
-        setTimerOn(!timerOn);
     };
+
     const resetTime = () => {
+        breakAudio.pause();
+        clearInterval(intervalId);
+        setIntervalId(null);
         setDisplayTime(25*60);
         setBreakTime(5*60);
         setSessionTime(25*60);
-        if (timerOn) {
-            clearInterval(localStorage.getItem('interval-id'));
-        }
-        setTimerOn(!timerOn);
-    }
-
+        setOnBreak(false);
+    };
 
     return(
         <div className="timer">
             <h1>Pomodoro Clock</h1>
+            <button onClick={playBreakSound}>Play</button>
             <div className="dual-containers">
-                <Length 
-                    title={'Break Length'} 
-                    changeTime={changeTime}
-                    type={'break'}
-                    time={breakTime/60}/>
-                <Length 
-                    title={'Session Length'} 
-                    changeTime={changeTime}
-                    type={'session'}
-                    time={sessionTime/60}/>
+            <div>
+                <h3 id='break-label'>Break Length</h3>
+                <div className="times-sets">
+                    <button onClick={() => changeTime(-60, 'break')} id='break-decrement'>Down</button>
+                </div>
+                <h3 id='break-length'>{breakTime/60}</h3>
+                <div className="times-sets">
+                <button onClick={() => changeTime(60, 'break')} id='break-increment'>Up</button>
+                </div>
+            </div>
+            <div>
+                <h3 id='session-label'>Session Length</h3>
+                <div className="times-sets">
+                    <button onClick={() => changeTime(-60, 'session')} id='session-decrement'>Down</button>
+                </div>
+                <h3 id='session-length'>{sessionTime/60}</h3>
+                <div className="times-sets">
+                <button onClick={() => changeTime(60, 'session')} id='session-increment'>Up</button>
+                </div>
+            </div>
             </div>
             <h3 id='timer-label'>{onBreak ? 'Break' : 'Session'}</h3>
             <h1 id='time-left'>{formatTime(displayTime)}</h1>
-            <button id='start_stop' onClick={controlTime}>{timerOn ? ('Pause'):('Start')}</button>
+            <button id='start_stop' onClick={timerControl}>{timerOn ? ('Pause'):('Start')}</button>
             <button id='reset' onClick={resetTime}>Reset</button>
         </div>
     )
